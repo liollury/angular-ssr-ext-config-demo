@@ -1,0 +1,11 @@
+{
+  "production":  false,
+  "apiUrl": "https://preprodApiUrl/",
+  "cdnUrl":  "https://cdnUrl/",
+  "featuresActivation": [
+    {
+      "featureKey": "adminSpace",
+      "active": false
+    }
+  ]
+}

@@ -13,15 +13,11 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/configuration",
+            "outputPath": "dist/configuration/browser",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
             "styles": [
               "src/styles.css"
             ],
@@ -41,21 +37,55 @@
                   "maximumError": "4kb"
                 }
               ],
-              "fileReplacements": [
+              "assets": [
+                "src/favicon.ico",
+                "src/assets",
                 {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
+                  "glob": "config.json",
+                  "input": "config/prod/",
+                  "output": "."
                 }
               ],
               "outputHashing": "all"
             },
-            "development": {
+            "dev": {
               "buildOptimizer": false,
               "optimization": false,
               "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
-              "namedChunks": true
+              "namedChunks": true,
+              "assets": [
+                "src/favicon.ico",
+                "src/assets",
+                {
+                  "glob": "config.json",
+                  "input": "config/dev/",
+                  "output": "."
+                }
+              ]
+            },
+            "staging": {
+              "assets": [
+                "src/favicon.ico",
+                "src/assets",
+                {
+                  "glob": "config.json",
+                  "input": "config/staging/",
+                  "output": "."
+                }
+              ]
+            },
+            "preprod": {
+              "assets": [
+                "src/favicon.ico",
+                "src/assets",
+                {
+                  "glob": "config.json",
+                  "input": "config/preprod/",
+                  "output": "."
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
@@ -66,11 +96,17 @@
             "production": {
               "browserTarget": "configuration:build:production"
             },
-            "development": {
-              "browserTarget": "configuration:build:development"
+            "dev": {
+              "browserTarget": "configuration:build:dev"
+            },
+            "staging": {
+              "browserTarget": "configuration:build:staging"
+            },
+            "preprod": {
+              "browserTarget": "configuration:build:preprod"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "dev"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
@@ -94,6 +130,70 @@
             ],
             "scripts": []
           }
+        },
+        "server": {
+          "builder": "@angular-devkit/build-angular:server",
+          "options": {
+            "outputPath": "dist/configuration/server",
+            "main": "server.ts",
+            "tsConfig": "tsconfig.server.json"
+          },
+          "configurations": {
+            "production": {
+              "outputHashing": "media"
+            },
+            "dev": {
+              "optimization": false,
+              "sourceMap": true,
+              "extractLicenses": false
+            },
+            "staging": {
+            },
+            "preprod": {
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve-ssr": {
+          "builder": "@nguniversal/builders:ssr-dev-server",
+          "configurations": {
+            "dev": {
+              "browserTarget": "configuration:build:dev",
+              "serverTarget": "configuration:server:dev"
+            },
+            "staging": {
+              "browserTarget": "configuration:build:staging",
+              "serverTarget": "configuration:server:staging"
+            },
+            "preprod": {
+              "browserTarget": "configuration:build:preprod",
+              "serverTarget": "configuration:server:preprod"
+            },
+            "production": {
+              "browserTarget": "configuration:build:production",
+              "serverTarget": "configuration:server:production"
+            }
+          },
+          "defaultConfiguration": "dev"
+        },
+        "prerender": {
+          "builder": "@nguniversal/builders:prerender",
+          "options": {
+            "routes": [
+              "/"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "configuration:build:production",
+              "serverTarget": "configuration:server:production"
+            },
+            "dev": {
+              "browserTarget": "configuration:build:dev",
+              "serverTarget": "configuration:server:dev"
+            }
+          },
+          "defaultConfiguration": "production"
         }
       }
     }
